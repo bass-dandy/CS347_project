@@ -1,0 +1,19 @@
+VOICE OF HAIR
+
+Christian Dinh
+Cesar Rion
+Hao-Hsiang Chi
+
+Running the application:
+
+(note: you'll need MongoDB and Node.js installed)
+
+1. Run an instance of MongoDB on the default port
+2. Run server.js (from this directory 'node server.js')
+3. Import the .sql file into APEX
+4. Go to 'shared components'
+5. Go to 'web references'
+6. Change the IP address for each web reference to the IP address of the 
+   machine the server is running on, but leave everything from the port number
+   onward
+7. That should be all!
