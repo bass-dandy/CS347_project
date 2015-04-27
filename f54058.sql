@@ -27,7 +27,7 @@ prompt APPLICATION 54058 - Voice of Hair
 -- Application Export:
 --   Application:     54058
 --   Name:            Voice of Hair
---   Date and Time:   14:44 Monday April 27, 2015
+--   Date and Time:   17:14 Monday April 27, 2015
 --   Exported By:     CTDINH93@GMAIL.COM
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -108,7 +108,7 @@ wwv_flow_api.create_flow(
 ,p_rejoin_existing_sessions=>'N'
 ,p_csv_encoding=>'Y'
 ,p_last_updated_by=>'CTDINH93@GMAIL.COM'
-,p_last_upd_yyyymmddhh24miss=>'20150427144049'
+,p_last_upd_yyyymmddhh24miss=>'20150427171302'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_ui_type_name => null
 );
@@ -7861,7 +7861,7 @@ wwv_flow_api.create_page(
 ,p_cache_mode=>'NOCACHE'
 ,p_help_text=>'No help is available for this page.'
 ,p_last_updated_by=>'CTDINH93@GMAIL.COM'
-,p_last_upd_yyyymmddhh24miss=>'20150427072251'
+,p_last_upd_yyyymmddhh24miss=>'20150427171302'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(3340971831191886429)
@@ -7964,7 +7964,7 @@ wwv_flow_api.create_report_region(
 ,p_component_template_options=>'#DEFAULT#:t-Report--altRowsDefault:t-Report--rowHighlight'
 ,p_display_point=>'BODY'
 ,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
-'select dbms_lob.getlength(image) as "Image", description as "Description", tags as "Tags"',
+'select image as "Image", description as "Description", tags as "Tags"',
 'from xmltable (',
 '        ''/json/row''',
 '        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P1_STYLES''))',
