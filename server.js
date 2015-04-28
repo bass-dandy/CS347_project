@@ -15,7 +15,11 @@ var Post = mongoose.model('Post', {
     image: Buffer,
     description: String,
     tags:       [String],
-    comments:   [String]
+    comments:   [String],
+    
+    date:  { type: Date, default: Date.now },
+    
+    likes: { type: Number, default: 0 }
 });
 
 // Schema for stylists
@@ -26,12 +30,18 @@ var Stylist = mongoose.model('Stylist', {
     facebook: String,
     insta:    String,
     twitter:  String,
+    
     phone:    String,
     web:      String,
-    price:    Number,
-    rating:   Number,
+    price:    { type: Number, min: 0, max: 5 },
+    rating:   { type: Number, min: 0, max: 5 },
     
     tags: [String],
+
+    reviews: [{
+        rating: { type: Number, min: 0, max: 5 }, 
+        review: String
+    }],
 
     location:  {
         state: String,
@@ -39,7 +49,9 @@ var Stylist = mongoose.model('Stylist', {
         zip:   String
     },
     
-    posts: [Post]
+    posts: [Post],
+    likes: [mongoose.Types.ObjectId],
+    pins:  [Post]
 });
 
 // Schema for enthusiasts
@@ -52,6 +64,7 @@ var Enthusiast = mongoose.model('Enthusiast', {
     twitter:  String,
 
     posts: [Post],
+    likes: [mongoose.Types.ObjectId],
     pins:  [Post]
 });
 
@@ -75,12 +88,11 @@ app.put('/:state/:city/:zip/stylists?', function(req, res) {
 
     newStylist.save(function(err) { 
         if(err) {
-            console.log("error adding stylist");
+            console.log(err);
             return next(err);
         }
     });
-    console.log("Adding stylist %s with email %s and password %s", req.query.name, req.query.email, req.query.password);
-    console.log("Location: %s, %s %s", req.params.city, req.params.state, req.params.zip);
+    console.log("Adding stylist %s with email %s", req.query.name, req.query.email);
     res.end();
 });
 
@@ -95,11 +107,11 @@ app.put('/enthusiasts?', function(req, res) {
 
     newEnthusiast.save(function(err) { 
         if(err) {
-            console.log("error adding stylist");
+            console.log(err);
             return next(err);
         }
     });
-    console.log("Adding enthusiast %s with email %s and password %s", req.query.name, req.query.email, req.query.password);
+    console.log("Adding enthusiast %s with email %s", req.query.name, req.query.email);
     res.end();
 });
 
@@ -144,7 +156,108 @@ app.post('/users/:id/posts?', function(req, res) {
         }
     });
 
-    res.end(req.body);
+    res.end();
+});
+
+
+// POST stylist review
+app.post('/users/:id/review?', function(req, res) {
+
+    // search for a stylist to review
+    Stylist.findByIdAndUpdate(
+        req.params.id,
+        { $push: { "reviews": { rating: req.query.rating, review: req.query.review  } }},
+        function(err, stylist) {
+            if(err) {
+                console.log(err);
+                res.end("error");
+            }
+        }
+    );
+    res.end();
+});
+
+
+// POST like a post
+app.post('/users/:uid/likes/:pid', function(req, res) {
+
+    // Search for post with given id and increment its likes
+    Post.findByIdAndUpdate(
+        req.params.pid,
+        { $inc : {"likes": 1 }},
+        function(err, Post) {
+            if(err) {
+                console.log(err);
+                res.end();
+            }
+        }
+    );
+
+    // search for a stylist to like the post
+    Stylist.findByIdAndUpdate(
+        req.params.uid,
+        { $push: { "likes": req.params.pid }},
+        function(err, stylist) {
+
+            // if no stylist found, search for an enthusiast
+            if(!stylist) {
+                Enthusiast.findByIdAndUpdate(
+                    req.params.uid,
+                    { $push: { "likes": req.params.pid }},
+                    function(err, enthusiast) {
+                        if(err) {
+                            console.log(err);
+                            res.end("error");
+                        }
+                    }
+                );
+            }
+            if(err) {
+                console.log(err);
+                res.end("error");
+            }
+        }
+    );  
+    res.end();
+});
+
+
+// POST pin a post
+app.post('/users/:uid/pins/:pid', function(req, res) {
+
+    // Search for post with given id
+    Post.findById(req.params.pid).lean().exec(
+        function(err, post) {
+            if(err) {
+                console.log(err);
+                res.end();
+            }
+            // search for a stylist who is pinning the post
+            Stylist.findByIdAndUpdate(
+                req.params.uid,
+                { $push: { "pins": JSON.stringify(post) }},
+                function(err, stylist) {
+
+                // if no stylist found, search for an enthusiast
+                if(!stylist) {
+                    Enthusiast.findByIdAndUpdate(
+                        req.params.uid,
+                        { $push: { "pins": JSON.stringify(post) }},
+                        function(err, enthusiast) {
+                            if(err) {
+                                console.log(err);
+                                res.end("error");
+                            }
+                        }
+                    );
+                }
+                if(err) {
+                    console.log(err);
+                    res.end("error");
+                }
+            });
+    });   
+    res.end();
 });
 
 
