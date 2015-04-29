@@ -1,10 +1,10 @@
-var http     = require("http"),
-    mongoose = require("mongoose"),
-    express  = require("express");
+var http     = require('http'),
+    mongoose = require('mongoose'),
+    express  = require('express');
 
 var app = express();
 
-mongoose.connect("mongodb://localhost", ["demo_collection"]);
+mongoose.connect('mongodb://localhost');
 
 /*****************************************************************************/
 /* Schemas *******************************************************************/
@@ -12,50 +12,18 @@ mongoose.connect("mongodb://localhost", ["demo_collection"]);
 
 // Schema for posts
 var Post = mongoose.model('Post', {
+    creator: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    date:    { type: Date, default: Date.now },
+    likes:   { type: Number, default: 0 },
+    
     image: Buffer,
     description: String,
     tags:       [String],
-    comments:   [String],
-    
-    date:  { type: Date, default: Date.now },
-    
-    likes: { type: Number, default: 0 }
+    comments:   [String]
 });
 
-// Schema for stylists
-var Stylist = mongoose.model('Stylist', {
-    name:     String,
-    email:    String,
-    password: String,
-    facebook: String,
-    insta:    String,
-    twitter:  String,
-    
-    phone:    String,
-    web:      String,
-    price:    { type: Number, min: 0, max: 5 },
-    rating:   { type: Number, min: 0, max: 5 },
-    
-    tags: [String],
-
-    reviews: [{
-        rating: { type: Number, min: 0, max: 5 }, 
-        review: String
-    }],
-
-    location:  {
-        state: String,
-        city:  String,
-        zip:   String
-    },
-    
-    posts: [Post],
-    likes: [mongoose.Types.ObjectId],
-    pins:  [Post]
-});
-
-// Schema for enthusiasts
-var Enthusiast = mongoose.model('Enthusiast', {
+// Schema for users
+var User = mongoose.model('User', {
     name:     String,
     email:    String,
     password: String,
@@ -63,9 +31,31 @@ var Enthusiast = mongoose.model('Enthusiast', {
     insta:    String,
     twitter:  String,
 
-    posts: [Post],
-    likes: [mongoose.Types.ObjectId],
-    pins:  [Post]
+//    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+    likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+    pins:  [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }],
+
+    isStylist: Boolean,
+
+    stylistInfo: {
+        phone:    String,
+        web:      String,
+        price:    { type: Number, min: 0, max: 5 },
+        rating:   { type: Number, min: 0, max: 5 },
+    
+        tags: [String],
+
+        reviews: [{
+            rating: { type: Number, min: 0, max: 5 }, 
+            review: String
+        }],
+
+        location:  {
+            state: String,
+            city:  String,
+            zip:   String
+        }
+    }
 });
 
 /*****************************************************************************/
@@ -73,104 +63,121 @@ var Enthusiast = mongoose.model('Enthusiast', {
 /*****************************************************************************/
 
 // PUT stylist, initial registration
-app.put('/:state/:city/:zip/stylists?', function(req, res) {
-    var newStylist = new Stylist({
-        name:     req.query.name,
-        email:    req.query.email,
-        password: req.query.password,
+app.put('/:state/:city/:zip/stylists?', function(req, res) {    
+    
+    User.findOne({ 'email': req.query.email }, function(err, user) {
+        if(user) {
+            console.log('Aborting stylist add');
+            res.end('A user with that email already exists');
+        }
+        else {
+            var newUser = new User({
+                name:      req.query.name,
+                email:     req.query.email,
+                password:  req.query.password,
+                isStylist: true,
 
-        location:  {
-            state: req.params.state,
-            city:  req.params.city,
-            zip:   req.params.zip
+                stylistInfo: { 
+                    location:  {
+                        state: req.params.state,
+                        city:  req.params.city,
+                        zip:   req.params.zip
+                    }
+                }
+            });
+            newUser.save(function(err) { 
+                if(err) {
+                    console.log(err);
+                    return next(err);
+                }
+            });
+            console.log('Adding stylist');
         }
     });
-
-    newStylist.save(function(err) { 
-        if(err) {
-            console.log(err);
-            return next(err);
-        }
-    });
-    console.log("Adding stylist %s with email %s", req.query.name, req.query.email);
     res.end();
 });
 
 
 // PUT enthusiast, initial registration
 app.put('/enthusiasts?', function(req, res) {
-    var newEnthusiast = new Enthusiast({
-        name:     req.query.name,
-        email:    req.query.email,
-        password: req.query.password,
-    });
 
-    newEnthusiast.save(function(err) { 
-        if(err) {
-            console.log(err);
-            return next(err);
+    User.findOne({ 'email': req.query.email }, function(err, user) {
+        if(user) {
+            console.log('Aborting enthusiast add');
+            res.end('A user with that email already exists');
+        }
+        else {
+            var newUser = new User({
+                name:      req.query.name,
+                email:     req.query.email,
+                password:  req.query.password,
+                isStylist: false
+            });
+            newUser.save(function(err) { 
+                if(err) {
+                    console.log(err);
+                    return next(err);
+                }
+            });
+            console.log('Adding enthusiast %s with email %s', req.query.name, req.query.email);
         }
     });
-    console.log("Adding enthusiast %s with email %s", req.query.name, req.query.email);
     res.end();
 });
 
 
-// POST user posts
+// POST create a new user post
 app.post('/users/:id/posts?', function(req, res) {
-    var newPost = new Post({
-        description: req.query.desc,
-        tags: req.query.tags.split(' ')
-    });
 
-    // search for a stylist to associate the post with
-    Stylist.findByIdAndUpdate(
+    // search for a user to associate the post with
+    User.findById(
         req.params.id,
-        { $push: { "posts": JSON.stringify(newPost) }},
-        function(err, stylist) {
-
-            // if no stylist found, search for an enthusiast
-            if(!stylist) {
-                Enthusiast.findByIdAndUpdate(
-                    req.params.id,
-                    { $push: { "posts": JSON.stringify(newPost) }},
-                    function(err, enthusiast) {
-                        if(err) {
-                            console.log(err);
-                            res.end("error");
-                        }
-                    }
-                );
-            }
+        function(err, user) {
             if(err) {
                 console.log(err);
-                res.end("error");
+                res.end('error');
+            }
+            // if user is found, create the post
+            if(user) {
+                var newPost = new Post({
+                    creator:     user._id,
+                    description: req.query.desc,
+                    tags:        req.query.tags.split(' ')
+                });
+                newPost.save(function(err) {
+                    if(err) {
+                        console.log(err);
+                        res.end('error');
+                    }
+                });
             }
         }
     );
-
-    newPost.save(function(err) {
-        if(err) {
-            console.log(err);
-            return next(err);
-        }
-    });
-
     res.end();
 });
 
 
 // POST stylist review
+// TODO prevent same user from reviewing same stylist multiple times
 app.post('/users/:id/review?', function(req, res) {
-
-    // search for a stylist to review
-    Stylist.findByIdAndUpdate(
-        req.params.id,
-        { $push: { "reviews": { rating: req.query.rating, review: req.query.review  } }},
-        function(err, stylist) {
+    var query  = { 
+        '_id': req.params.id, 
+        'isStylist': true  
+    };
+    var update = { 
+        $push: { 
+            'stylistInfo.reviews': { 
+                rating: req.query.rating, 
+                review: req.query.review  
+            } 
+        }
+    };
+    // update stylist being reviewed
+    User.update(query, update,
+        function(err, user) {
             if(err) {
                 console.log(err);
-                res.end("error");
+                res.end('error');
             }
         }
     );
@@ -178,43 +185,35 @@ app.post('/users/:id/review?', function(req, res) {
 });
 
 
-// POST like a post
+// POST like a post 
+// TODO prevent user from liking same post multiple times
 app.post('/users/:uid/likes/:pid', function(req, res) {
-
-    // Search for post with given id and increment its likes
-    Post.findByIdAndUpdate(
-        req.params.pid,
-        { $inc : {"likes": 1 }},
-        function(err, Post) {
+    var query = {
+        '_id': req.params.uid,
+        'likes': { $nin: [req.params.pid] }
+    };
+    var update = { 
+        $addToSet: { 
+            'likes': req.params.pid
+        }
+    };
+    // search for a user to like the post
+    User.update(query, update, 
+        function(err, user) {
             if(err) {
                 console.log(err);
-                res.end();
+                res.end('error');
             }
-        }
-    );
-
-    // search for a stylist to like the post
-    Stylist.findByIdAndUpdate(
-        req.params.uid,
-        { $push: { "likes": req.params.pid }},
-        function(err, stylist) {
-
-            // if no stylist found, search for an enthusiast
-            if(!stylist) {
-                Enthusiast.findByIdAndUpdate(
-                    req.params.uid,
-                    { $push: { "likes": req.params.pid }},
-                    function(err, enthusiast) {
+            else if(user) {
+                // Search for post with given id and increment its likes
+                Post.findByIdAndUpdate(req.params.pid, { $inc : {'likes': 1 }},
+                    function(err, Post) {
                         if(err) {
                             console.log(err);
-                            res.end("error");
+                            res.end();
                         }
                     }
                 );
-            }
-            if(err) {
-                console.log(err);
-                res.end("error");
             }
         }
     );  
@@ -232,28 +231,12 @@ app.post('/users/:uid/pins/:pid', function(req, res) {
                 console.log(err);
                 res.end();
             }
-            // search for a stylist who is pinning the post
-            Stylist.findByIdAndUpdate(
-                req.params.uid,
-                { $push: { "pins": JSON.stringify(post) }},
-                function(err, stylist) {
-
-                // if no stylist found, search for an enthusiast
-                if(!stylist) {
-                    Enthusiast.findByIdAndUpdate(
-                        req.params.uid,
-                        { $push: { "pins": JSON.stringify(post) }},
-                        function(err, enthusiast) {
-                            if(err) {
-                                console.log(err);
-                                res.end("error");
-                            }
-                        }
-                    );
-                }
+            // search for a user who is pinning the post
+            User.update({ '_id': req.params.uid }, { $addToSet: { 'pins': post._id }},
+                function(err, user) {
                 if(err) {
                     console.log(err);
-                    res.end("error");
+                    res.end('error');
                 }
             });
     });   
@@ -264,26 +247,15 @@ app.post('/users/:uid/pins/:pid', function(req, res) {
 // GET login, returns _id of user's profile document
 app.get('/users?', function(req, res) {
    
-    // search for stylist with given email and password
-    Stylist.findOne({
-        "email": req.query.email,
-        "password": req.query.password
-    }).lean().exec(function(err, stylist) {
-            
-        // if no stylist found, search for an enthusiast
-        if(!stylist) {
-            Enthusiast.findOne({
-                "email": req.query.email,
-                "password": req.query.password
-            }).lean().exec(function(err, enthusiast) {
-                if(enthusiast)
-                    return res.end(JSON.stringify(enthusiast._id).replace(/"/g, ""));
-                else
-                    return res.end("user not found");
-            });       
-        }
+    // search for user with given email and password
+    User.findOne({
+        'email':    req.query.email,
+        'password': req.query.password
+    }).lean().exec(function(err, user) {
+        if(!user)
+            return res.end('user not found');
         else
-            return res.end(JSON.stringify(stylist._id).replace(/"/g, ""));
+            return res.end(JSON.stringify(user._id).replace(/"/g, ''));
     });
 });
 
@@ -293,8 +265,8 @@ app.get('/posts?', function(req, res) {
     var tags = req.query.tags.split(' ');
 
     Post.find({
-        "tags": { $in: tags }
-    }).lean().exec(function(err, posts) {
+        'tags': { $in: tags }
+    }).populate('creator').lean().exec(function(err, posts) {
         return res.end(JSON.stringify(posts))
     });
 });
@@ -303,36 +275,29 @@ app.get('/posts?', function(req, res) {
 // GET posts by email
 app.get('/users/:email/posts', function(req, res) {
     
-    // search for a stylist to associate the post with
-    Stylist.findOne({ 
-        "email": req.params.email 
-    }).lean().exec(function(err, stylist) {
-
-        // if no stylist found, search for an enthusiast
-        if(!stylist) {
-            Enthusiast.findOne({ 
-                "email": req.params.email 
-            }).lean().exec(function(err, enthusiast) {
-                if(err) {
-                    console.log(err);
-                    res.end();
-                }
-                res.end(JSON.stringify(enthusiast.posts).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"));
-            });
-        }
+    User.findOne({ 'email': req.params.email }).exec(function(err, user) {
         if(err) {
             console.log(err);
             res.end();
         }
-        res.end(JSON.stringify(stylist.posts).replace(/\\/g, "").replace(/"{/g, "{").replace(/}"/g, "}"));
+        if(user) {
+            Post.find({ 'creator': user._id  }, function(err, posts) {
+                if(err) {
+                    console.log(err);
+                    res.end();
+                }
+                res.end(JSON.stringify(posts));
+            });
+        }
     });
 });
 
 
 // GET stylists by state
 app.get('/:state/stylists', function(req, res) {
-    Stylist.find({
-        "location.state": req.params.state
+    User.find({
+        'isStylist': true,
+        'stylistInfo.location.state': req.params.state
     }).lean().exec(function(err, stylists) {
         return res.end(JSON.stringify(stylists))
     });
@@ -341,9 +306,10 @@ app.get('/:state/stylists', function(req, res) {
 
 // GET stylists by state + city
 app.get('/:state/:city/stylists', function(req, res) {
-    Stylist.find({
-        "location.state": req.params.state,
-        "location.city":  req.params.city
+    User.find({
+        'isStylist': true,
+        'stylistInfo.location.state': req.params.state,
+        'stylistInfo.location.city':  req.params.city
     }).lean().exec(function(err, stylists) {
         return res.end(JSON.stringify(stylists))
     });
@@ -352,20 +318,22 @@ app.get('/:state/:city/stylists', function(req, res) {
 
 // GET stylist by zip
 app.get('/:state/:city/:zip/stylists', function(req, res) {
-    Stylist.find({
-        "location.zip": req.params.zip
+    User.find({
+        'isStylist': true,
+        'stylistInfo.location.zip': req.params.zip
     }).lean().exec(function(err, stylists) {
         return res.end(JSON.stringify(stylists))
     });
 });
 
-
+/*
 // GET stylists by price range
 app.get('/stylists?', function(req, res) {
     Stylist.find().where("price").gt(req.query.minprice).lt(req.query.maxprice).lean().exec(function(err, stylists) {
         return res.end(JSON.stringify(stylists))
     });
 });
+*/
 
 /****************************************************************************/
 /* APEX-specific routes, very hacky *****************************************/
@@ -373,8 +341,9 @@ app.get('/stylists?', function(req, res) {
 
 // GET stylist by state
 app.get('/:state///stylists', function(req, res) {
-     Stylist.find({
-        "location.state": req.params.state
+     User.find({
+        'isStylist': true,
+        'stylistInfo.location.state': req.params.state
     }).lean().exec(function(err, stylists) {
         return res.end(JSON.stringify(stylists))
     });   
@@ -383,8 +352,9 @@ app.get('/:state///stylists', function(req, res) {
 // GET stylist by state + city
 app.get('/:state/:city//stylists', function(req, res) {
      Stylist.find({
-        "location.state": req.params.state,
-        "location.city":  req.params.city
+        'isStylist': true,
+        'stylistInfo.location.state': req.params.state,
+        'stylistInfo.location.city':  req.params.city
     }).lean().exec(function(err, stylists) {
         return res.end(JSON.stringify(stylists))
     });   
@@ -393,7 +363,8 @@ app.get('/:state/:city//stylists', function(req, res) {
 // GET stylist by zip
 app.get('/:state//:zip/stylists', function(req, res) {
     Stylist.find({
-        "location.zip": req.params.zip
+        'isStylist': true,
+        'stylistInfo.location.zip': req.params.zip
     }).lean().exec(function(err, stylists) {
         return res.end(JSON.stringify(stylists))
     }); 
