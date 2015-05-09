@@ -126,6 +126,29 @@ app.put('/enthusiasts?', function(req, res) {
 });
 
 
+// POST update profile info
+app.post('/users/:id?', function(req, res) {
+    
+    var update = {
+        'name':              req.query.name,
+        'stylistInfo.phone': req.query.phone,
+        'stylistInfo.web':   req.query.web,
+        'stylistInfo.price': req.query.price,
+        'stylistInfo.tags':  req.query.tags.split(' ')
+    };
+    
+    User.update({ '_id': req.params.id }, update,
+        function(err, user) {
+            if(err) {
+                console.log(err);
+                res.end('error');
+            }
+        }
+    );
+    res.end();
+});
+
+
 // POST create a new user post
 app.post('/users/:id/posts?', function(req, res) {
 
@@ -241,6 +264,18 @@ app.post('/users/:uid/pins/:pid', function(req, res) {
             });
     });   
     res.end();
+});
+
+
+// GET user by id
+app.get('/users/:id', function(req, res) {
+    User.findById(req.params.id).populate('pins').exec(function(err, user) {
+        if(err) {
+            console.log(err);
+            res.end();
+        }
+        res.end('[' + JSON.stringify(user) + ']');
+    });
 });
 
 
