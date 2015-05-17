@@ -27,7 +27,7 @@ prompt APPLICATION 54058 - Voice of Hair
 -- Application Export:
 --   Application:     54058
 --   Name:            Voice of Hair
---   Date and Time:   17:14 Monday April 27, 2015
+--   Date and Time:   20:24 Sunday May 17, 2015
 --   Exported By:     CTDINH93@GMAIL.COM
 --   Flashback:       0
 --   Export Type:     Application Export
@@ -36,15 +36,15 @@ prompt APPLICATION 54058 - Voice of Hair
 --
 
 -- Application Statistics:
---   Pages:                      9
---     Items:                   22
---     Processes:               10
---     Regions:                 14
---     Buttons:                 12
+--   Pages:                     13
+--     Items:                   48
+--     Processes:               16
+--     Regions:                 22
+--     Buttons:                 15
 --     Dynamic Actions:          1
 --   Shared Components:
 --     Logic:
---       Web Services:           7
+--       Web Services:           9
 --     Navigation:
 --       Lists:                  2
 --       Breadcrumbs:            1
@@ -63,7 +63,7 @@ prompt APPLICATION 54058 - Voice of Hair
 --         Breadcrumb:           1
 --         Button:               3
 --         Report:               8
---       LOVs:                   2
+--       LOVs:                   3
 --     Globalization:
 --     Reports:
 --   Supporting Objects:  Included
@@ -108,7 +108,7 @@ wwv_flow_api.create_flow(
 ,p_rejoin_existing_sessions=>'N'
 ,p_csv_encoding=>'Y'
 ,p_last_updated_by=>'CTDINH93@GMAIL.COM'
-,p_last_upd_yyyymmddhh24miss=>'20150427171302'
+,p_last_upd_yyyymmddhh24miss=>'20150506174842'
 ,p_file_prefix => nvl(wwv_flow_application_install.get_static_app_file_prefix,'')
 ,p_ui_type_name => null
 );
@@ -123,11 +123,34 @@ wwv_flow_api.create_list(
 );
 wwv_flow_api.create_list_item(
  p_id=>wwv_flow_api.id(2175557064721647387)
-,p_list_item_display_sequence=>10
+,p_list_item_display_sequence=>0
 ,p_list_item_link_text=>'Home'
 ,p_list_item_link_target=>'f?p=&APP_ID.:1:&APP_SESSION.::&DEBUG.:'
 ,p_list_item_current_type=>'COLON_DELIMITED_PAGE_LIST'
 ,p_list_item_current_for_pages=>'1'
+);
+wwv_flow_api.create_list_item(
+ p_id=>wwv_flow_api.id(3675406795054334629)
+,p_list_item_display_sequence=>10
+,p_list_item_link_text=>'My Profile'
+,p_list_item_link_target=>'f?p=&APP_ID.:14:&SESSION.::&DEBUG.::::'
+,p_list_item_disp_cond_type=>'FUNCTION_BODY'
+,p_list_item_disp_condition=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'DECLARE',
+' cookie  OWA_COOKIE.cookie;  ',
+'BEGIN',
+'',
+'   cookie := OWA_COOKIE.get(''VOH_LOGIN'');',
+'',
+'   if cookie.vals.First IS NULL then ',
+'    return false;',
+'   else ',
+'    return true; ',
+'   end if;',
+'',
+'END; '))
+,p_list_item_current_type=>'COLON_DELIMITED_PAGE_LIST'
+,p_list_item_current_for_pages=>'14'
 );
 wwv_flow_api.create_list_item(
  p_id=>wwv_flow_api.id(3545303697596867531)
@@ -598,6 +621,41 @@ wwv_flow_api.create_list_of_values(
 '        columns',
 '           item varchar(255) path ''/row/item'')',
 'order by item;'))
+);
+wwv_flow_api.create_list_of_values(
+ p_id=>wwv_flow_api.id(3888069559366909102)
+,p_lov_name=>'PRICES'
+,p_lov_query=>'.'||wwv_flow_api.id(3888069559366909102)||'.'
+);
+wwv_flow_api.create_static_lov_data(
+ p_id=>wwv_flow_api.id(3888069850886909103)
+,p_lov_disp_sequence=>1
+,p_lov_disp_value=>'$'
+,p_lov_return_value=>'1'
+);
+wwv_flow_api.create_static_lov_data(
+ p_id=>wwv_flow_api.id(3888070297197909104)
+,p_lov_disp_sequence=>2
+,p_lov_disp_value=>'$$'
+,p_lov_return_value=>'2'
+);
+wwv_flow_api.create_static_lov_data(
+ p_id=>wwv_flow_api.id(3888070608238909105)
+,p_lov_disp_sequence=>3
+,p_lov_disp_value=>'$$$'
+,p_lov_return_value=>'3'
+);
+wwv_flow_api.create_static_lov_data(
+ p_id=>wwv_flow_api.id(3888071038704909105)
+,p_lov_disp_sequence=>4
+,p_lov_disp_value=>'$$$$'
+,p_lov_return_value=>'4'
+);
+wwv_flow_api.create_static_lov_data(
+ p_id=>wwv_flow_api.id(3888071412589909106)
+,p_lov_disp_sequence=>5
+,p_lov_disp_value=>'$$$$$'
+,p_lov_return_value=>'5'
 );
 end;
 /
@@ -7861,7 +7919,7 @@ wwv_flow_api.create_page(
 ,p_cache_mode=>'NOCACHE'
 ,p_help_text=>'No help is available for this page.'
 ,p_last_updated_by=>'CTDINH93@GMAIL.COM'
-,p_last_upd_yyyymmddhh24miss=>'20150427171302'
+,p_last_upd_yyyymmddhh24miss=>'20150501013959'
 );
 wwv_flow_api.create_page_plug(
  p_id=>wwv_flow_api.id(3340971831191886429)
@@ -7889,14 +7947,15 @@ wwv_flow_api.create_report_region(
 ,p_component_template_options=>'#DEFAULT#:t-Report--altRowsDefault:t-Report--rowHighlight'
 ,p_display_point=>'BODY'
 ,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
-'select name as "Name", city || '', '' || state as "Location", email as "Email", '''' as "View Posts"',
+'select id, name as "Name", city || '', '' || state as "Location", email as "Email", '''' as "View Profile"',
 'from xmltable (',
 '        ''/json/row''',
 '        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P1_STYLISTS''))',
 '        columns',
+'           id    varchar(255) path ''/row/_id'',',
 '           name  varchar(255) path ''/row/name'',',
-'           city  varchar(255) path ''/row/location/city'',',
-'           state varchar(255) path ''/row/location/state'',',
+'           city  varchar(255) path ''/row/stylistInfo/location/city'',',
+'           state varchar(255) path ''/row/stylistInfo/location/state'',',
 '           email varchar(255) path ''/row/email'')'))
 ,p_source_type=>'NATIVE_SQL_REPORT'
 ,p_ajax_enabled=>'Y'
@@ -7908,34 +7967,51 @@ wwv_flow_api.create_report_region(
 ,p_query_row_count_max=>500
 );
 wwv_flow_api.create_report_columns(
- p_id=>wwv_flow_api.id(3352148480844900061)
+ p_id=>wwv_flow_api.id(3865027749371606212)
 ,p_query_column_id=>1
+,p_column_alias=>'ID'
+,p_column_display_sequence=>5
+,p_hidden_column=>'Y'
+,p_derived_column=>'N'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(3352148480844900061)
+,p_query_column_id=>2
 ,p_column_alias=>'Name'
 ,p_column_display_sequence=>1
 ,p_column_heading=>'Name'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
 );
 wwv_flow_api.create_report_columns(
  p_id=>wwv_flow_api.id(3379362439098343663)
-,p_query_column_id=>2
+,p_query_column_id=>3
 ,p_column_alias=>'Location'
 ,p_column_display_sequence=>2
 ,p_column_heading=>'Location'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
 );
 wwv_flow_api.create_report_columns(
  p_id=>wwv_flow_api.id(3379362803021343663)
-,p_query_column_id=>3
+,p_query_column_id=>4
 ,p_column_alias=>'Email'
 ,p_column_display_sequence=>3
 ,p_column_heading=>'Email'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
 );
 wwv_flow_api.create_report_columns(
- p_id=>wwv_flow_api.id(3447157582978627525)
-,p_query_column_id=>4
-,p_column_alias=>'View Posts'
+ p_id=>wwv_flow_api.id(3865027673930606211)
+,p_query_column_id=>5
+,p_column_alias=>'View Profile'
 ,p_column_display_sequence=>4
-,p_column_heading=>'View posts'
-,p_column_link=>'f?p=&APP_ID.:13:&SESSION.::&DEBUG.:RP:P13_EMAIL:#Email#'
-,p_column_linktext=>'View Posts'
+,p_column_heading=>'View profile'
+,p_column_link=>'f?p=&APP_ID.:16:&SESSION.::&DEBUG.:RP:P16_ID:#ID#'
+,p_column_linktext=>'View Profile'
 ,p_derived_column=>'N'
 ,p_include_in_export=>'Y'
 );
@@ -7964,14 +8040,19 @@ wwv_flow_api.create_report_region(
 ,p_component_template_options=>'#DEFAULT#:t-Report--altRowsDefault:t-Report--rowHighlight'
 ,p_display_point=>'BODY'
 ,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
-'select image as "Image", description as "Description", tags as "Tags"',
+'select id, creator as "Posted by", date_posted, image as "Image", description as "Description", tags as "Tags", '''' as "Like", likes as "Likes", '''' as "Pin"',
 'from xmltable (',
 '        ''/json/row''',
 '        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P1_STYLES''))',
 '        columns',
+'           id           varchar(255)  path ''/row/_id'',',
+'           creator      varchar(255)  path ''/row/creator/name'',',
+'           date_posted  varchar(255)  path ''/row/date'',',
 '           image        blob          path ''/row/image'',',
 '           description  varchar(4000) path ''/row/description'',',
-'           tags         varchar(4000) path ''/row/tags'')'))
+'           tags         varchar(4000) path ''/row/tags'',',
+'           likes        number        path ''/row/likes'')',
+'order by date_posted desc'))
 ,p_source_type=>'NATIVE_SQL_REPORT'
 ,p_ajax_enabled=>'Y'
 ,p_query_row_template=>wwv_flow_api.id(2175537670755646027)
@@ -7986,10 +8067,36 @@ wwv_flow_api.create_report_region(
 ,p_plug_query_strip_html=>'N'
 );
 wwv_flow_api.create_report_columns(
- p_id=>wwv_flow_api.id(3447157242239627522)
+ p_id=>wwv_flow_api.id(3865028044299606215)
 ,p_query_column_id=>1
+,p_column_alias=>'ID'
+,p_column_display_sequence=>9
+,p_hidden_column=>'Y'
+,p_derived_column=>'N'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(3447159661743627546)
+,p_query_column_id=>2
+,p_column_alias=>'Posted by'
+,p_column_display_sequence=>1
+,p_column_heading=>'Posted by'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(3447159786698627547)
+,p_query_column_id=>3
+,p_column_alias=>'DATE_POSTED'
+,p_column_display_sequence=>8
+,p_hidden_column=>'Y'
+,p_derived_column=>'N'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(3447157242239627522)
+,p_query_column_id=>4
 ,p_column_alias=>'Image'
-,p_column_display_sequence=>3
+,p_column_display_sequence=>2
 ,p_column_heading=>'Image'
 ,p_use_as_row_header=>'N'
 ,p_derived_column=>'N'
@@ -7997,9 +8104,9 @@ wwv_flow_api.create_report_columns(
 );
 wwv_flow_api.create_report_columns(
  p_id=>wwv_flow_api.id(3447156387139627513)
-,p_query_column_id=>2
+,p_query_column_id=>5
 ,p_column_alias=>'Description'
-,p_column_display_sequence=>1
+,p_column_display_sequence=>3
 ,p_column_heading=>'Description'
 ,p_use_as_row_header=>'N'
 ,p_derived_column=>'N'
@@ -8007,12 +8114,44 @@ wwv_flow_api.create_report_columns(
 );
 wwv_flow_api.create_report_columns(
  p_id=>wwv_flow_api.id(3447156471808627514)
-,p_query_column_id=>3
+,p_query_column_id=>6
 ,p_column_alias=>'Tags'
-,p_column_display_sequence=>2
+,p_column_display_sequence=>4
 ,p_column_heading=>'Tags'
 ,p_use_as_row_header=>'N'
 ,p_column_hit_highlight=>'&P1_SEARCH_TAGS.'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(3447158275115627532)
+,p_query_column_id=>7
+,p_column_alias=>'Like'
+,p_column_display_sequence=>6
+,p_column_heading=>'Like'
+,p_column_link=>'f?p=&APP_ID.:18:&SESSION.::&DEBUG.:RP:P18_PID,P18_ACTION:#ID#,likes'
+,p_column_linktext=>'<3'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(3447158335075627533)
+,p_query_column_id=>8
+,p_column_alias=>'Likes'
+,p_column_display_sequence=>5
+,p_column_heading=>'Likes'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(3865029019790606225)
+,p_query_column_id=>9
+,p_column_alias=>'Pin'
+,p_column_display_sequence=>7
+,p_column_heading=>'Pin'
+,p_column_link=>'f?p=&APP_ID.:18:&SESSION.::&DEBUG.:RP:P18_PID,P18_ACTION:#ID#,pins'
+,p_column_linktext=>'Pin Post'
 ,p_derived_column=>'N'
 ,p_include_in_export=>'Y'
 );
@@ -8183,6 +8322,16 @@ wwv_flow_api.create_page_process(
 ,p_attribute_03=>'P1_STYLES'
 ,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 ,p_process_when_button_id=>wwv_flow_api.id(3381112979315748003)
+);
+wwv_flow_api.create_page_process(
+ p_id=>wwv_flow_api.id(3659139281456034544)
+,p_process_sequence=>30
+,p_process_point=>'AFTER_SUBMIT'
+,p_process_type=>'NATIVE_WEB_SERVICE'
+,p_process_name=>'POST like a post'
+,p_attribute_01=>wwv_flow_api.id(3658410599847963202)
+,p_attribute_02=>'ITEMS'
+,p_error_display_location=>'INLINE_IN_NOTIFICATION'
 );
 wwv_flow_api.create_page_process(
  p_id=>wwv_flow_api.id(2588061586738682860)
@@ -9185,12 +9334,1506 @@ wwv_flow_api.create_page_process(
 );
 end;
 /
+prompt --application/pages/page_00014
+begin
+wwv_flow_api.create_page(
+ p_id=>14
+,p_user_interface_id=>wwv_flow_api.id(2175556665893647380)
+,p_name=>'Profile Page'
+,p_page_mode=>'NORMAL'
+,p_step_title=>'Profile Page'
+,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
+,p_first_item=>'NO_FIRST_ITEM'
+,p_page_template_options=>'#DEFAULT#'
+,p_overwrite_navigation_list=>'Y'
+,p_navigation_list_position=>'TOP'
+,p_navigation_list_id=>wwv_flow_api.id(2175512109473644387)
+,p_navigation_list_template_id=>wwv_flow_api.id(2175549762479646735)
+,p_nav_list_template_options=>'#DEFAULT#'
+,p_page_is_public_y_n=>'N'
+,p_cache_mode=>'NOCACHE'
+,p_help_text=>'No help is available for this page.'
+,p_last_updated_by=>'CTDINH93@GMAIL.COM'
+,p_last_upd_yyyymmddhh24miss=>'20150506174341'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(3447158531858627535)
+,p_plug_name=>'Content'
+,p_region_template_options=>'#DEFAULT#:t-Region--removeHeader:t-Region--scrollBody'
+,p_plug_template=>wwv_flow_api.id(2175528546341645476)
+,p_plug_display_sequence=>10
+,p_include_in_reg_disp_sel_yn=>'N'
+,p_plug_display_point=>'BODY'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+wwv_flow_api.create_report_region(
+ p_id=>wwv_flow_api.id(3865026995087606204)
+,p_name=>'Pinned Posts'
+,p_template=>wwv_flow_api.id(2175528546341645476)
+,p_display_sequence=>40
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
+,p_component_template_options=>'#DEFAULT#:t-Report--altRowsDefault:t-Report--rowHighlight'
+,p_new_grid_row=>false
+,p_display_point=>'BODY'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select description as "Description", tags as "Tags"',
+'from xmltable(',
+'     ''json/row/pins/row''',
+'     passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'     columns',
+'          description varchar(255) path ''/row/description'',',
+'          tags        varchar(255) path ''/row/tags''',
+')'))
+,p_source_type=>'NATIVE_SQL_REPORT'
+,p_ajax_enabled=>'Y'
+,p_query_row_template=>wwv_flow_api.id(2175537670755646027)
+,p_query_num_rows=>15
+,p_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_query_show_nulls_as=>'-'
+,p_query_num_rows_type=>'ROW_RANGES_IN_SELECT_LIST'
+,p_pagination_display_position=>'BOTTOM_RIGHT'
+,p_csv_output=>'N'
+,p_prn_output=>'N'
+,p_sort_null=>'L'
+,p_plug_query_strip_html=>'N'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(3865027076015606205)
+,p_query_column_id=>1
+,p_column_alias=>'Description'
+,p_column_display_sequence=>1
+,p_column_heading=>'Description'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(3865027125067606206)
+,p_query_column_id=>2
+,p_column_alias=>'Tags'
+,p_column_display_sequence=>2
+,p_column_heading=>'Tags'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_region(
+ p_id=>wwv_flow_api.id(3865027220384606207)
+,p_name=>'Posts'
+,p_template=>wwv_flow_api.id(2175528546341645476)
+,p_display_sequence=>30
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
+,p_component_template_options=>'#DEFAULT#:t-Report--altRowsDefault:t-Report--rowHighlight'
+,p_display_point=>'BODY'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select description as "Description", tags as "Tags"',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_POSTS''))',
+'        columns',
+'           description  varchar(255) path ''/row/description'',',
+'           tags         varchar(255) path ''/row/tags'')'))
+,p_source_type=>'NATIVE_SQL_REPORT'
+,p_ajax_enabled=>'Y'
+,p_query_row_template=>wwv_flow_api.id(2175537670755646027)
+,p_query_num_rows=>15
+,p_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_query_show_nulls_as=>'-'
+,p_query_num_rows_type=>'ROW_RANGES_IN_SELECT_LIST'
+,p_pagination_display_position=>'BOTTOM_RIGHT'
+,p_csv_output=>'N'
+,p_prn_output=>'N'
+,p_sort_null=>'L'
+,p_plug_query_strip_html=>'N'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(3865027437226606209)
+,p_query_column_id=>1
+,p_column_alias=>'Description'
+,p_column_display_sequence=>1
+,p_column_heading=>'Description'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(3865027557472606210)
+,p_query_column_id=>2
+,p_column_alias=>'Tags'
+,p_column_display_sequence=>2
+,p_column_heading=>'Tags'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(3447160050378627550)
+,p_button_sequence=>90
+,p_button_plug_id=>wwv_flow_api.id(3447158531858627535)
+,p_button_name=>'SUBMIT_EDIT'
+,p_button_action=>'SUBMIT'
+,p_button_template_options=>'#DEFAULT#'
+,p_button_template_id=>wwv_flow_api.id(2175551330983647174)
+,p_button_image_alt=>'Edit Profile'
+,p_button_position=>'BOTTOM'
+);
+wwv_flow_api.create_page_branch(
+ p_id=>wwv_flow_api.id(3865026607960606201)
+,p_branch_action=>'f?p=&APP_ID.:15:&SESSION.::&DEBUG.:RP::&success_msg=#SUCCESS_MSG#'
+,p_branch_point=>'BEFORE_COMPUTATION'
+,p_branch_type=>'REDIRECT_URL'
+,p_branch_when_button_id=>wwv_flow_api.id(3447160050378627550)
+,p_branch_sequence=>10
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3447158664436627536)
+,p_name=>'P14_NAME'
+,p_item_sequence=>20
+,p_item_plug_id=>wwv_flow_api.id(3447158531858627535)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Name'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select name',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           name  varchar(255) path ''/row/name'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3447158770156627537)
+,p_name=>'P14_EMAIL'
+,p_item_sequence=>30
+,p_item_plug_id=>wwv_flow_api.id(3447158531858627535)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Email'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select email',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           email  varchar(255) path ''/row/email'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3447158810766627538)
+,p_name=>'P14_WEB'
+,p_item_sequence=>50
+,p_item_plug_id=>wwv_flow_api.id(3447158531858627535)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Website'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select web',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           web  varchar(255) path ''/row/stylistInfo/web'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3447158904775627539)
+,p_name=>'P14_PHONE'
+,p_item_sequence=>60
+,p_item_plug_id=>wwv_flow_api.id(3447158531858627535)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Phone #'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select phone',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           phone  varchar(255) path ''/row/stylistInfo/phone'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3447159092394627540)
+,p_name=>'P14_PRICE'
+,p_item_sequence=>70
+,p_item_plug_id=>wwv_flow_api.id(3447158531858627535)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Price'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    p number;',
+'begin',
+'    select price into p',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           price  varchar(255) path ''/row/stylistInfo/price'');',
+'           ',
+'    if p = 1 then',
+'        return ''$'';',
+'    elsif p = 2 then',
+'        return ''$$'';',
+'    elsif p = 3 then',
+'        return ''$$$'';',
+'    elsif p = 4 then',
+'        return ''$$$$'';',
+'    elsif p = 5 then',
+'        return ''$$$$$'';',
+'    end if;',
+'end;'))
+,p_source_type=>'FUNCTION_BODY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_begin_on_new_line=>'N'
+,p_begin_on_new_field=>'N'
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3447159181502627541)
+,p_name=>'P14_TAGS'
+,p_item_sequence=>80
+,p_item_plug_id=>wwv_flow_api.id(3447158531858627535)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Specialties'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select tags',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           tags  varchar(255) path ''/row/stylistInfo/tags'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3447159223915627542)
+,p_name=>'P14_LOCATION'
+,p_item_sequence=>40
+,p_item_plug_id=>wwv_flow_api.id(3447158531858627535)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Location'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select city || '', '' || state || '' '' || zip',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           city   varchar(255) path ''/row/stylistInfo/location/city'',',
+'           state  varchar(255) path ''/row/stylistInfo/location/state'',',
+'           zip    varchar(255) path ''/row/stylistInfo/location/zip'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_process(
+ p_id=>wwv_flow_api.id(3447159948828627549)
+,p_process_sequence=>10
+,p_process_point=>'BEFORE_HEADER'
+,p_process_type=>'NATIVE_PLSQL'
+,p_process_name=>'Get Profile'
+,p_process_sql_clob=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'DECLARE',
+'   cookie  varchar(255);',
+'   l_clob  clob;',
+'   email   varchar(255);',
+'BEGIN',
+'',
+'   -- fetch a profile document using the value in the user''s cookie',
+'   cookie := OWA_COOKIE.get(''VOH_LOGIN'').vals(1);',
+'   ',
+'   l_clob := apex_web_service.make_rest_request(',
+'             p_url => ''129.116.18.125:8888/users/'' || cookie,',
+'             p_http_method => ''GET'');',
+'   ',
+'   -- place the results in a new collection called P14_PROFILE',
+'   if apex_COLLECTION.COLLECTION_EXISTS(''P14_PROFILE'') then',
+'       apex_COLLECTION.DELETE_COLLECTION(''P14_PROFILE'');',
+'   end if;',
+'   ',
+'   apex_collection.create_collection(',
+'       p_collection_name => ''P14_PROFILE'');',
+'    ',
+'   APEX_COLLECTION.ADD_MEMBER(',
+'       p_collection_name => ''P14_PROFILE'',',
+'       p_clob001         => l_clob);  ',
+'       ',
+'   -- fetch the user''s posts using their email address',
+'   select mail into email',
+'   from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           mail varchar(255)  path ''/row/email'');',
+'       ',
+'   l_clob := apex_web_service.make_rest_request(',
+'             p_url => ''129.116.18.125:8888/users/'' || email || ''/posts'',',
+'             p_http_method => ''GET'');',
+'             ',
+'   -- place the results in a new collection called P14_POSTS',
+'   if apex_COLLECTION.COLLECTION_EXISTS(''P14_POSTS'') then',
+'       apex_COLLECTION.DELETE_COLLECTION(''P14_POSTS'');',
+'   end if;',
+'   ',
+'   apex_collection.create_collection(',
+'       p_collection_name => ''P14_POSTS'');',
+'    ',
+'   APEX_COLLECTION.ADD_MEMBER(',
+'       p_collection_name => ''P14_POSTS'',',
+'       p_clob001         => l_clob);  ',
+'   ',
+'END;'))
+,p_error_display_location=>'INLINE_IN_NOTIFICATION'
+);
+end;
+/
+prompt --application/pages/page_00015
+begin
+wwv_flow_api.create_page(
+ p_id=>15
+,p_user_interface_id=>wwv_flow_api.id(2175556665893647380)
+,p_name=>'Profile Edit'
+,p_page_mode=>'NORMAL'
+,p_step_title=>'Profile Edit'
+,p_step_sub_title=>'Profile Edit'
+,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
+,p_first_item=>'NO_FIRST_ITEM'
+,p_page_template_options=>'#DEFAULT#'
+,p_overwrite_navigation_list=>'Y'
+,p_navigation_list_position=>'TOP'
+,p_navigation_list_id=>wwv_flow_api.id(2175512109473644387)
+,p_navigation_list_template_id=>wwv_flow_api.id(2175549762479646735)
+,p_nav_list_template_options=>'#DEFAULT#'
+,p_page_is_public_y_n=>'N'
+,p_cache_mode=>'NOCACHE'
+,p_help_text=>'No help is available for this page.'
+,p_last_updated_by=>'CTDINH93@GMAIL.COM'
+,p_last_upd_yyyymmddhh24miss=>'20150506174605'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(3865129112779634780)
+,p_plug_name=>'Content'
+,p_region_template_options=>'#DEFAULT#:t-Region--removeHeader:t-Region--scrollBody'
+,p_plug_template=>wwv_flow_api.id(2175528546341645476)
+,p_plug_display_sequence=>10
+,p_include_in_reg_disp_sel_yn=>'N'
+,p_plug_display_point=>'BODY'
+,p_plug_query_row_template=>1
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(3865129470119634782)
+,p_button_sequence=>90
+,p_button_plug_id=>wwv_flow_api.id(3865129112779634780)
+,p_button_name=>'SUBMIT_EDIT'
+,p_button_action=>'SUBMIT'
+,p_button_template_options=>'#DEFAULT#'
+,p_button_template_id=>wwv_flow_api.id(2175551330983647174)
+,p_button_image_alt=>'Done Editing'
+,p_button_position=>'BOTTOM'
+);
+wwv_flow_api.create_page_branch(
+ p_id=>wwv_flow_api.id(3865133130599634794)
+,p_branch_name=>'Go To Page 14'
+,p_branch_action=>'f?p=&APP_ID.:14:&SESSION.::&DEBUG.:RP::&success_msg=#SUCCESS_MSG#'
+,p_branch_point=>'AFTER_PROCESSING'
+,p_branch_type=>'REDIRECT_URL'
+,p_branch_when_button_id=>wwv_flow_api.id(3865129470119634782)
+,p_branch_sequence=>10
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3865129854793634784)
+,p_name=>'P15_NAME'
+,p_is_required=>true
+,p_item_sequence=>20
+,p_item_plug_id=>wwv_flow_api.id(3865129112779634780)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Name'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select name',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P15_PROFILE''))',
+'        columns',
+'           name  varchar(255) path ''/row/name'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3865130298753634786)
+,p_name=>'P15_EMAIL'
+,p_item_sequence=>30
+,p_item_plug_id=>wwv_flow_api.id(3865129112779634780)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Email'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select email',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P15_PROFILE''))',
+'        columns',
+'           email  varchar(255) path ''/row/email'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3865130659107634786)
+,p_name=>'P15_WEB'
+,p_item_sequence=>50
+,p_item_plug_id=>wwv_flow_api.id(3865129112779634780)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Website'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select web',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P15_PROFILE''))',
+'        columns',
+'           web  varchar(255) path ''/row/stylistInfo/web'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P15_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3865131066918634786)
+,p_name=>'P15_PHONE'
+,p_item_sequence=>60
+,p_item_plug_id=>wwv_flow_api.id(3865129112779634780)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Phone #'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select phone',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P15_PROFILE''))',
+'        columns',
+'           phone  varchar(255) path ''/row/stylistInfo/phone'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P15_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3865131406877634787)
+,p_name=>'P15_PRICE'
+,p_item_sequence=>70
+,p_item_plug_id=>wwv_flow_api.id(3865129112779634780)
+,p_prompt=>'Price'
+,p_display_as=>'NATIVE_SELECT_LIST'
+,p_named_lov=>'PRICES'
+,p_lov=>'.'||wwv_flow_api.id(3888069559366909102)||'.'
+,p_cHeight=>1
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P15_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_lov_display_extra=>'YES'
+,p_attribute_01=>'NONE'
+,p_attribute_02=>'N'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3865131831521634787)
+,p_name=>'P15_TAGS'
+,p_item_sequence=>80
+,p_item_plug_id=>wwv_flow_api.id(3865129112779634780)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Specialties'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select tags',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P15_PROFILE''))',
+'        columns',
+'           tags  varchar(255) path ''/row/stylistInfo/tags'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P15_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3865132249735634788)
+,p_name=>'P15_LOCATION'
+,p_item_sequence=>40
+,p_item_plug_id=>wwv_flow_api.id(3865129112779634780)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Location'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select city || '','' || state || '' '' || zip',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P15_PROFILE''))',
+'        columns',
+'           city   varchar(255) path ''/row/stylistInfo/location/city'',',
+'           state  varchar(255) path ''/row/stylistInfo/location/state'',',
+'           zip    varchar(255) path ''/row/stylistInfo/location/zip'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P14_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_process(
+ p_id=>wwv_flow_api.id(3865132690161634791)
+,p_process_sequence=>10
+,p_process_point=>'BEFORE_HEADER'
+,p_process_type=>'NATIVE_PLSQL'
+,p_process_name=>'Get Profile'
+,p_process_sql_clob=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'DECLARE',
+' cookie  varchar(255);',
+' l_clob  clob;',
+'BEGIN',
+'   cookie := OWA_COOKIE.get(''VOH_LOGIN'').vals(1);',
+'   ',
+'   l_clob := apex_web_service.make_rest_request(',
+'             p_url => ''129.116.18.125:8888/users/'' || cookie,',
+'             p_http_method => ''GET'');',
+'   ',
+'   if apex_COLLECTION.COLLECTION_EXISTS(''P15_PROFILE'') then',
+'       apex_COLLECTION.DELETE_COLLECTION(''P15_PROFILE'');',
+'   end if;',
+'   ',
+'   apex_collection.create_collection(',
+'       p_collection_name => ''P15_PROFILE'');',
+'    ',
+'   APEX_COLLECTION.ADD_MEMBER(',
+'       p_collection_name => ''P15_PROFILE'',',
+'       p_clob001         => l_clob);',
+'   ',
+'END;'))
+,p_error_display_location=>'INLINE_IN_NOTIFICATION'
+);
+wwv_flow_api.create_page_process(
+ p_id=>wwv_flow_api.id(3865026829086606203)
+,p_process_sequence=>10
+,p_process_point=>'ON_SUBMIT_BEFORE_COMPUTATION'
+,p_process_type=>'NATIVE_PLSQL'
+,p_process_name=>'New'
+,p_process_sql_clob=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    id varchar(255);',
+'    l_clob  clob;',
+'begin',
+'    select docId into id',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P15_PROFILE''))',
+'        columns',
+'           docId  varchar(255) path ''/row/_id'');',
+'',
+'    l_clob := apex_web_service.make_rest_request(',
+'             p_url => ''129.116.18.125:8888/users/'' || id || ''?name='' || :P15_NAME || ',
+'                      ''&phone='' || :P15_PHONE || ''&web='' || :P15_WEB || ''&price='' || ',
+'                      :P15_PRICE || ''&tags='' || :P15_TAGS,',
+'             p_http_method => ''POST'');',
+'end;'))
+,p_error_display_location=>'INLINE_IN_NOTIFICATION'
+,p_process_when_button_id=>wwv_flow_api.id(3865129470119634782)
+);
+end;
+/
+prompt --application/pages/page_00016
+begin
+wwv_flow_api.create_page(
+ p_id=>16
+,p_user_interface_id=>wwv_flow_api.id(2175556665893647380)
+,p_name=>'Profile Page Other'
+,p_page_mode=>'NORMAL'
+,p_step_title=>'Profile Page Other'
+,p_step_sub_title=>'Profile Page Other'
+,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
+,p_first_item=>'NO_FIRST_ITEM'
+,p_page_template_options=>'#DEFAULT#'
+,p_overwrite_navigation_list=>'Y'
+,p_navigation_list_position=>'TOP'
+,p_navigation_list_id=>wwv_flow_api.id(2175512109473644387)
+,p_navigation_list_template_id=>wwv_flow_api.id(2175549762479646735)
+,p_nav_list_template_options=>'#DEFAULT#'
+,p_page_is_public_y_n=>'N'
+,p_cache_mode=>'NOCACHE'
+,p_help_text=>'No help is available for this page.'
+,p_last_updated_by=>'CTDINH93@GMAIL.COM'
+,p_last_upd_yyyymmddhh24miss=>'20150506174429'
+);
+wwv_flow_api.create_report_region(
+ p_id=>wwv_flow_api.id(4051789890726185404)
+,p_name=>'Pinned Posts'
+,p_template=>wwv_flow_api.id(2175528546341645476)
+,p_display_sequence=>40
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
+,p_component_template_options=>'#DEFAULT#:t-Report--altRowsDefault:t-Report--rowHighlight'
+,p_new_grid_row=>false
+,p_display_point=>'BODY'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select description as "Description", tags as "Tags"',
+'from xmltable (',
+'        ''/json/row/pins/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           description  varchar(255) path ''/row/description'',',
+'           tags         varchar(255) path ''/row/tags'')'))
+,p_source_type=>'NATIVE_SQL_REPORT'
+,p_ajax_enabled=>'Y'
+,p_query_row_template=>wwv_flow_api.id(2175537670755646027)
+,p_query_num_rows=>15
+,p_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_query_show_nulls_as=>'-'
+,p_query_num_rows_type=>'ROW_RANGES_IN_SELECT_LIST'
+,p_pagination_display_position=>'BOTTOM_RIGHT'
+,p_csv_output=>'N'
+,p_prn_output=>'N'
+,p_sort_null=>'L'
+,p_plug_query_strip_html=>'N'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(4051790292289185406)
+,p_query_column_id=>1
+,p_column_alias=>'Description'
+,p_column_display_sequence=>1
+,p_column_heading=>'Description'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(4051790649626185407)
+,p_query_column_id=>2
+,p_column_alias=>'Tags'
+,p_column_display_sequence=>2
+,p_column_heading=>'Tags'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_region(
+ p_id=>wwv_flow_api.id(4051791047134185410)
+,p_name=>'Posts'
+,p_template=>wwv_flow_api.id(2175528546341645476)
+,p_display_sequence=>30
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_region_template_options=>'#DEFAULT#:t-Region--scrollBody'
+,p_component_template_options=>'#DEFAULT#:t-Report--altRowsDefault:t-Report--rowHighlight'
+,p_display_point=>'BODY'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select description as "Description", tags as "Tags"',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_POSTS''))',
+'        columns',
+'           description  varchar(255) path ''/row/description'',',
+'           tags         varchar(255) path ''/row/tags'')'))
+,p_source_type=>'NATIVE_SQL_REPORT'
+,p_ajax_enabled=>'Y'
+,p_query_row_template=>wwv_flow_api.id(2175537670755646027)
+,p_query_num_rows=>15
+,p_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_query_show_nulls_as=>'-'
+,p_query_num_rows_type=>'ROW_RANGES_IN_SELECT_LIST'
+,p_pagination_display_position=>'BOTTOM_RIGHT'
+,p_csv_output=>'N'
+,p_prn_output=>'N'
+,p_sort_null=>'L'
+,p_plug_query_strip_html=>'N'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(4051791467814185411)
+,p_query_column_id=>1
+,p_column_alias=>'Description'
+,p_column_display_sequence=>1
+,p_column_heading=>'Description'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_report_columns(
+ p_id=>wwv_flow_api.id(4051791867986185412)
+,p_query_column_id=>2
+,p_column_alias=>'Tags'
+,p_column_display_sequence=>2
+,p_column_heading=>'Tags'
+,p_use_as_row_header=>'N'
+,p_derived_column=>'N'
+,p_include_in_export=>'Y'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(4051792237599185412)
+,p_plug_name=>'Content'
+,p_region_template_options=>'#DEFAULT#:t-Region--removeHeader:t-Region--scrollBody'
+,p_plug_template=>wwv_flow_api.id(2175528546341645476)
+,p_plug_display_sequence=>10
+,p_include_in_reg_disp_sel_yn=>'N'
+,p_plug_display_point=>'BODY'
+,p_plug_query_row_template=>1
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3865027984577606214)
+,p_name=>'P16_ID'
+,p_item_sequence=>10
+,p_item_plug_id=>wwv_flow_api.id(4051792237599185412)
+,p_display_as=>'NATIVE_HIDDEN'
+,p_attribute_01=>'Y'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(4051793064038185414)
+,p_name=>'P16_NAME'
+,p_item_sequence=>20
+,p_item_plug_id=>wwv_flow_api.id(4051792237599185412)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Name'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select name',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           name  varchar(255) path ''/row/name'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(4051793481437185416)
+,p_name=>'P16_EMAIL'
+,p_item_sequence=>30
+,p_item_plug_id=>wwv_flow_api.id(4051792237599185412)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Email'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select email',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           email  varchar(255) path ''/row/email'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(4051793858111185416)
+,p_name=>'P16_LOCATION'
+,p_item_sequence=>40
+,p_item_plug_id=>wwv_flow_api.id(4051792237599185412)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Location'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select city || '', '' || state || '' '' || zip',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           city   varchar(255) path ''/row/stylistInfo/location/city'',',
+'           state  varchar(255) path ''/row/stylistInfo/location/state'',',
+'           zip    varchar(255) path ''/row/stylistInfo/location/zip'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(4051794256683185417)
+,p_name=>'P16_WEB'
+,p_item_sequence=>50
+,p_item_plug_id=>wwv_flow_api.id(4051792237599185412)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Website'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select web',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           web  varchar(255) path ''/row/stylistInfo/web'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(4051794664983185419)
+,p_name=>'P16_PHONE'
+,p_item_sequence=>60
+,p_item_plug_id=>wwv_flow_api.id(4051792237599185412)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Phone #'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select phone',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           phone  varchar(255) path ''/row/stylistInfo/phone'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(4051795020369185419)
+,p_name=>'P16_PRICE'
+,p_item_sequence=>70
+,p_item_plug_id=>wwv_flow_api.id(4051792237599185412)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Price'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    p number;',
+'begin',
+'    select price into p',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           price  varchar(255) path ''/row/stylistInfo/price'');',
+'           ',
+'    if p = 1 then',
+'        return ''$'';',
+'    elsif p = 2 then',
+'        return ''$$'';',
+'    elsif p = 3 then',
+'        return ''$$$'';',
+'    elsif p = 4 then',
+'        return ''$$$$'';',
+'    elsif p = 5 then',
+'        return ''$$$$$'';',
+'    end if;',
+'end;'))
+,p_source_type=>'FUNCTION_BODY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_begin_on_new_line=>'N'
+,p_begin_on_new_field=>'N'
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(4051795444732185420)
+,p_name=>'P16_TAGS'
+,p_item_sequence=>80
+,p_item_plug_id=>wwv_flow_api.id(4051792237599185412)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Specialties'
+,p_source=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'select tags',
+'from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           tags  varchar(255) path ''/row/stylistInfo/tags'');'))
+,p_source_type=>'QUERY'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_display_when=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'declare',
+'    str varchar(255);',
+'begin',
+'    select isStylist into str',
+'    from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           isStylist  varchar(255) path ''/row/isStylist'');',
+'           ',
+'    if str = ''true'' then',
+'        return true;',
+'    else',
+'        return false;',
+'    end if;',
+'end;'))
+,p_display_when_type=>'FUNCTION_BODY'
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_process(
+ p_id=>wwv_flow_api.id(4051795882636185423)
+,p_process_sequence=>10
+,p_process_point=>'BEFORE_HEADER'
+,p_process_type=>'NATIVE_PLSQL'
+,p_process_name=>'Get Profile'
+,p_process_sql_clob=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'DECLARE',
+'   l_clob  clob;',
+'   email   varchar(255);',
+'BEGIN',
+'',
+'   -- fetch a profile document using the set id value',
+'   l_clob := apex_web_service.make_rest_request(',
+'             p_url => ''129.116.18.125:8888/users/'' || :P16_ID,',
+'             p_http_method => ''GET'');',
+'   ',
+'   -- place the results in a new collection called P16_PROFILE',
+'   if apex_COLLECTION.COLLECTION_EXISTS(''P16_PROFILE'') then',
+'       apex_COLLECTION.DELETE_COLLECTION(''P16_PROFILE'');',
+'   end if;',
+'   ',
+'   apex_collection.create_collection(',
+'       p_collection_name => ''P16_PROFILE'');',
+'    ',
+'   APEX_COLLECTION.ADD_MEMBER(',
+'       p_collection_name => ''P16_PROFILE'',',
+'       p_clob001         => l_clob);  ',
+'       ',
+'   -- fetch the user''s posts using their email address',
+'   select mail into email',
+'   from xmltable (',
+'        ''/json/row''',
+'        passing apex_json.to_xmltype((select clob001 from apex_collections where collection_name = ''P16_PROFILE''))',
+'        columns',
+'           mail varchar(255)  path ''/row/email'');',
+'       ',
+'   l_clob := apex_web_service.make_rest_request(',
+'             p_url => ''129.116.18.125:8888/users/'' || email || ''/posts'',',
+'             p_http_method => ''GET'');',
+'             ',
+'   -- place the results in a new collection called P16_POSTS',
+'   if apex_COLLECTION.COLLECTION_EXISTS(''P16_POSTS'') then',
+'       apex_COLLECTION.DELETE_COLLECTION(''P16_POSTS'');',
+'   end if;',
+'   ',
+'   apex_collection.create_collection(',
+'       p_collection_name => ''P16_POSTS'');',
+'    ',
+'   APEX_COLLECTION.ADD_MEMBER(',
+'       p_collection_name => ''P16_POSTS'',',
+'       p_clob001         => l_clob);  ',
+'   ',
+'END;'))
+,p_error_display_location=>'INLINE_IN_NOTIFICATION'
+);
+end;
+/
+prompt --application/pages/page_00018
+begin
+wwv_flow_api.create_page(
+ p_id=>18
+,p_user_interface_id=>wwv_flow_api.id(2175556665893647380)
+,p_name=>'Like/Pin a Post'
+,p_page_mode=>'MODAL'
+,p_step_title=>'Like/Pin a Post'
+,p_step_sub_title_type=>'TEXT_WITH_SUBSTITUTIONS'
+,p_first_item=>'NO_FIRST_ITEM'
+,p_page_template_options=>'#DEFAULT#'
+,p_dialog_chained=>'Y'
+,p_overwrite_navigation_list=>'N'
+,p_page_is_public_y_n=>'N'
+,p_cache_mode=>'NOCACHE'
+,p_help_text=>'No help is available for this page.'
+,p_last_updated_by=>'CTDINH93@GMAIL.COM'
+,p_last_upd_yyyymmddhh24miss=>'20150506174842'
+);
+wwv_flow_api.create_page_plug(
+ p_id=>wwv_flow_api.id(3865028154901606216)
+,p_plug_name=>'Content'
+,p_region_template_options=>'#DEFAULT#:t-Region--removeHeader:t-Region--scrollBody'
+,p_plug_template=>wwv_flow_api.id(2175528546341645476)
+,p_plug_display_sequence=>10
+,p_include_in_reg_disp_sel_yn=>'Y'
+,p_plug_display_point=>'BODY'
+,p_plug_query_options=>'DERIVED_REPORT_COLUMNS'
+,p_attribute_01=>'N'
+,p_attribute_02=>'HTML'
+);
+wwv_flow_api.create_page_button(
+ p_id=>wwv_flow_api.id(3865028755483606222)
+,p_button_sequence=>30
+,p_button_plug_id=>wwv_flow_api.id(3865028154901606216)
+,p_button_name=>'SUBMIT_OK'
+,p_button_action=>'SUBMIT'
+,p_button_template_options=>'#DEFAULT#'
+,p_button_template_id=>wwv_flow_api.id(2175551330983647174)
+,p_button_image_alt=>'OK'
+,p_button_position=>'BOTTOM'
+);
+wwv_flow_api.create_page_branch(
+ p_id=>wwv_flow_api.id(3865028944255606224)
+,p_branch_name=>'OK'
+,p_branch_action=>'f?p=&APP_ID.:1:&SESSION.::&DEBUG.:RP::&success_msg=#SUCCESS_MSG#'
+,p_branch_point=>'BEFORE_COMPUTATION'
+,p_branch_type=>'REDIRECT_URL'
+,p_branch_when_button_id=>wwv_flow_api.id(3865028755483606222)
+,p_branch_sequence=>10
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3865028217967606217)
+,p_name=>'P18_LIKED'
+,p_item_sequence=>10
+,p_item_plug_id=>wwv_flow_api.id(3865028154901606216)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'Liked'
+,p_source=>'Post liked!'
+,p_source_type=>'STATIC'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_grid_label_column_span=>0
+,p_display_when=>':P18_ACTION = ''likes'''
+,p_display_when_type=>'PLSQL_EXPRESSION'
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3865028314628606218)
+,p_name=>'P18_PINNED'
+,p_item_sequence=>20
+,p_item_plug_id=>wwv_flow_api.id(3865028154901606216)
+,p_use_cache_before_default=>'NO'
+,p_prompt=>'New'
+,p_source=>'Post pinned!'
+,p_source_type=>'STATIC'
+,p_display_as=>'NATIVE_TEXT_FIELD'
+,p_cSize=>30
+,p_grid_label_column_span=>0
+,p_display_when=>':P18_ACTION = ''pins'''
+,p_display_when_type=>'PLSQL_EXPRESSION'
+,p_read_only_when_type=>'ALWAYS'
+,p_field_template=>wwv_flow_api.id(2175550864634646906)
+,p_item_template_options=>'#DEFAULT#'
+,p_attribute_01=>'N'
+,p_attribute_02=>'N'
+,p_attribute_04=>'TEXT'
+,p_attribute_05=>'BOTH'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3865028404421606219)
+,p_name=>'P18_PID'
+,p_item_sequence=>40
+,p_item_plug_id=>wwv_flow_api.id(3865028154901606216)
+,p_display_as=>'NATIVE_HIDDEN'
+,p_attribute_01=>'Y'
+);
+wwv_flow_api.create_page_item(
+ p_id=>wwv_flow_api.id(3865028561445606220)
+,p_name=>'P18_ACTION'
+,p_item_sequence=>50
+,p_item_plug_id=>wwv_flow_api.id(3865028154901606216)
+,p_display_as=>'NATIVE_HIDDEN'
+,p_attribute_01=>'Y'
+);
+wwv_flow_api.create_page_process(
+ p_id=>wwv_flow_api.id(3865028618357606221)
+,p_process_sequence=>10
+,p_process_point=>'BEFORE_BOX_BODY'
+,p_process_type=>'NATIVE_PLSQL'
+,p_process_name=>'New'
+,p_process_sql_clob=>wwv_flow_utilities.join(wwv_flow_t_varchar2(
+'DECLARE',
+'   cookie  varchar(255);',
+'   l_clob  clob;',
+'BEGIN',
+'',
+'   -- fetch a profile document using the value in the user''s cookie',
+'   cookie := OWA_COOKIE.get(''VOH_LOGIN'').vals(1);',
+'   ',
+'   l_clob := apex_web_service.make_rest_request(',
+'             p_url => ''129.116.18.125:8888/users/'' || cookie || ''/'' || :P18_ACTION || ''/'' || :P18_PID,',
+'             p_http_method => ''POST'');',
+'   ',
+'END;'))
+,p_error_display_location=>'INLINE_IN_NOTIFICATION'
+);
+end;
+/
 prompt --application/shared_components/logic/webservices/get_stylist_by_state
 begin
 wwv_flow_api.create_web_service(
  p_id=>wwv_flow_api.id(2328168269680099586)
 ,p_name=>'GET stylist by state'
-,p_url=>'http://129.116.18.222:8888/&P1_SEARCH_STATE./&P1_SEARCH_CITY./&P1_SEARCH_ZIP./stylists'
+,p_url=>'http://129.116.18.125:8888/&P1_SEARCH_STATE./&P1_SEARCH_CITY./&P1_SEARCH_ZIP./stylists'
 ,p_action=>'REST'
 ,p_static_parm_04=>'GET'
 ,p_static_parm_05=>'json'
@@ -9216,7 +10859,7 @@ begin
 wwv_flow_api.create_web_service(
  p_id=>wwv_flow_api.id(3398291552995494747)
 ,p_name=>'PUT Stylist'
-,p_url=>'129.116.18.222:8888/&P3_STATE./&P3_CITY./&P3_ZIP./stylists?name=&P3_FNAME.+&P3_LNAME.&email=&P3_EMAIL.&password=&P3_PASS.'
+,p_url=>'129.116.18.125:8888/&P3_STATE./&P3_CITY./&P3_ZIP./stylists?name=&P3_FNAME.+&P3_LNAME.&email=&P3_EMAIL.&password=&P3_PASS.'
 ,p_action=>'REST'
 ,p_static_parm_04=>'PUT'
 ,p_static_parm_05=>'json'
@@ -9242,7 +10885,7 @@ begin
 wwv_flow_api.create_web_service(
  p_id=>wwv_flow_api.id(3442787056698677417)
 ,p_name=>'PUT Enthusiast'
-,p_url=>'129.116.18.222:8888/enthusiasts?name=&P5_FNAME.+&P5_LNAME.&email=&P5_EMAIL.&password=&P5_PASS.'
+,p_url=>'129.116.18.125:8888/enthusiasts?name=&P5_FNAME.+&P5_LNAME.&email=&P5_EMAIL.&password=&P5_PASS.'
 ,p_action=>'REST'
 ,p_static_parm_04=>'PUT'
 ,p_static_parm_05=>'json'
@@ -9268,7 +10911,7 @@ begin
 wwv_flow_api.create_web_service(
  p_id=>wwv_flow_api.id(3500674489891119268)
 ,p_name=>'GET login'
-,p_url=>'129.116.18.222:8888/users?email=&P2_EMAIL.&password=&P2_PASS.'
+,p_url=>'129.116.18.125:8888/users?email=&P2_EMAIL.&password=&P2_PASS.'
 ,p_action=>'REST'
 ,p_static_parm_04=>'GET'
 ,p_static_parm_05=>'json'
@@ -9294,7 +10937,7 @@ begin
 wwv_flow_api.create_web_service(
  p_id=>wwv_flow_api.id(3541498190673405876)
 ,p_name=>'GET posts by tag'
-,p_url=>'129.116.18.222:8888/posts?tags=&P1_SEARCH_TAGS.'
+,p_url=>'129.116.18.125:8888/posts?tags=&P1_SEARCH_TAGS.'
 ,p_action=>'REST'
 ,p_static_parm_04=>'GET'
 ,p_static_parm_05=>'json'
@@ -9320,7 +10963,7 @@ begin
 wwv_flow_api.create_web_service(
  p_id=>wwv_flow_api.id(3546687751158965570)
 ,p_name=>'POST user post'
-,p_url=>'129.116.18.222:8888/users/&P12_ID./posts?desc=&P12_DESC.&tags=&P12_TAGS.'
+,p_url=>'129.116.18.125:8888/users/&P12_ID./posts?desc=&P12_DESC.&tags=&P12_TAGS.'
 ,p_action=>'REST'
 ,p_static_parm_04=>'POST'
 ,p_static_parm_05=>'json'
@@ -9367,7 +11010,7 @@ begin
 wwv_flow_api.create_web_service(
  p_id=>wwv_flow_api.id(3562726721417402932)
 ,p_name=>'GET posts by email'
-,p_url=>'129.116.18.222:8888/users/&P13_EMAIL./posts'
+,p_url=>'129.116.18.125:8888/users/&P13_EMAIL./posts'
 ,p_action=>'REST'
 ,p_static_parm_04=>'GET'
 ,p_static_parm_05=>'json'
@@ -9381,6 +11024,63 @@ wwv_flow_api.create_ws_operations(
 wwv_flow_api.create_ws_parameters(
  p_id=>wwv_flow_api.id(3562727215394402935)
 ,p_ws_opers_id=>wwv_flow_api.id(3562726992254402934)
+,p_name=>'json'
+,p_input_or_output=>'O'
+,p_parm_type=>'json'
+,p_type_is_xsd=>'N'
+);
+end;
+/
+prompt --application/shared_components/logic/webservices/post_like_a_post
+begin
+wwv_flow_api.create_web_service(
+ p_id=>wwv_flow_api.id(3658410368275963200)
+,p_name=>'POST like a post'
+,p_url=>'129.116.18.125:8888/posts/&POST_ID.?user=&USER_ID.'
+,p_action=>'REST'
+,p_static_parm_04=>'POST'
+,p_static_parm_05=>'json'
+,p_static_parm_10=>'nvp'
+);
+wwv_flow_api.create_ws_operations(
+ p_id=>wwv_flow_api.id(3658410599847963202)
+,p_ws_id=>wwv_flow_api.id(3658410368275963200)
+,p_name=>'doREST'
+);
+wwv_flow_api.create_ws_parameters(
+ p_id=>wwv_flow_api.id(3658410849402963206)
+,p_ws_opers_id=>wwv_flow_api.id(3658410599847963202)
+,p_name=>'json'
+,p_input_or_output=>'O'
+,p_parm_type=>'json'
+,p_type_is_xsd=>'N'
+);
+wwv_flow_api.create_ws_process_parms_map(
+ p_id=>wwv_flow_api.id(3447158417453627534)
+,p_parameter_id=>wwv_flow_api.id(3658410849402963206)
+,p_process_id=>wwv_flow_api.id(3659139281456034544)
+);
+end;
+/
+prompt --application/shared_components/logic/webservices/get_user_by_id
+begin
+wwv_flow_api.create_web_service(
+ p_id=>wwv_flow_api.id(3804356592820820693)
+,p_name=>'GET user by id'
+,p_url=>'129.116.18.125:8888/users/'
+,p_action=>'REST'
+,p_static_parm_04=>'GET'
+,p_static_parm_05=>'json'
+,p_static_parm_10=>'nvp'
+);
+wwv_flow_api.create_ws_operations(
+ p_id=>wwv_flow_api.id(3804356708484820695)
+,p_ws_id=>wwv_flow_api.id(3804356592820820693)
+,p_name=>'doREST'
+);
+wwv_flow_api.create_ws_parameters(
+ p_id=>wwv_flow_api.id(3804357110489820698)
+,p_ws_opers_id=>wwv_flow_api.id(3804356708484820695)
 ,p_name=>'json'
 ,p_input_or_output=>'O'
 ,p_parm_type=>'json'

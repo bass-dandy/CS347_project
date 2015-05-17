@@ -4,6 +4,9 @@ Christian Dinh
 Cesar Rios
 Hao-Hsiang Chi
 
+Application URL:
+https://apex.oracle.com/pls/apex/f?p=54058:1:103439119628502:::::
+
 Running the application:
 
 (note: you'll need MongoDB and Node.js installed)
@@ -16,4 +19,8 @@ Running the application:
 6. Change the IP address for each web reference to the IP address of the 
    machine the server is running on, but leave everything from the port number
    onward
-7. That should be all!
+7. Pages 14, 15, and 16 have a process that fires in the prerendering phase
+   'before header'. Change the IP addresses found in these processes to the
+   IP address of the machine the server is running on. Do the same for page 18,
+   the only difference is that the page 18 process fires 'before regions'
+8. That should be all!
